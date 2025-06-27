@@ -1,0 +1,26 @@
+CXX = g++
+CXXFLAGS = -Isrc/include -Wall -c
+LDFLAGS = -Lsrc/lib -lsfml-graphics -lsfml-window -lsfml-system -lopengl32 -lsfml-audio
+SRC_DIR = coding
+OBJ_DIR = build
+
+SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
+OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
+TARGET = main
+
+all: create_build_dir $(TARGET)
+
+create_build_dir:
+	@if not exist $(OBJ_DIR) mkdir $(OBJ_DIR)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+clean:
+	@if exist $(OBJ_DIR) del /Q $(OBJ_DIR)\*.o
+	@if exist $(TARGET).exe del $(TARGET).exe
+
+.PHONY: all clean create_build_dir
